@@ -1,0 +1,3 @@
+The ContactDataPusher is a simple, learning project for generating medium amount of bogus contact data for reuse in other projects.
+
+Note that it is a good idea never to run this application on an actual device, as it messes around with you contacts.
