@@ -1,4 +1,4 @@
-package com.capgemini;
+package com.capgemini.igor;
 
 import java.util.ArrayList;
 
