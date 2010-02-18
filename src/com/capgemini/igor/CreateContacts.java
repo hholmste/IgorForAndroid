@@ -7,12 +7,13 @@ import android.content.ContentProviderOperation;
 import android.content.ContentProviderResult;
 import android.content.OperationApplicationException;
 import android.content.ContentProviderOperation.Builder;
-import android.database.Cursor;
 import android.os.Bundle;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Data;
 import android.provider.ContactsContract.RawContacts;
+import android.provider.ContactsContract.CommonDataKinds.Nickname;
+import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.util.Log;
 
@@ -55,9 +56,9 @@ public class CreateContacts extends Activity {
 		Builder rawContactBuilder = ContentProviderOperation.newInsert(Data.CONTENT_URI)
 				.withValueBackReference(Data.RAW_CONTACT_ID, 0)
 				.withValue(Data.MIMETYPE, StructuredName.MIMETYPE)
-				.withValue(StructuredName.DISPLAY_NAME, "gaven famility")
-				.withValue(StructuredName.FAMILY_NAME, "famility")
-				.withValue(StructuredName.GIVEN_NAME, "gaven")
+				.withValue(StructuredName.DISPLAY_NAME, "Regular Guy")
+				.withValue(StructuredName.FAMILY_NAME, "Guy")
+				.withValue(StructuredName.GIVEN_NAME, "Regular")
 				.withValue(StructuredName.PREFIX, "Mr.");
 
 		ArrayList<ContentProviderOperation> operations = new ArrayList<ContentProviderOperation>();
@@ -71,27 +72,45 @@ public class CreateContacts extends Activity {
 
 			if (result.uri.getPathSegments().contains("raw_contacts")) {
 
-				Cursor resultCursor = getContentResolver().query(result.uri,
-						new String[] { RawContacts.ACCOUNT_NAME,
-								RawContacts.SOURCE_ID,
-								RawContacts.CONTACT_ID,
-								RawContacts._ID },
-						null,
-						null,
-						null);
+				String lastPathSegment = result.uri.getLastPathSegment();
 
-				Log.d(logTag, "names of columns: ");
-				String[] columns = resultCursor.getColumnNames();
+				if (lastPathSegment != null) {
+					int rawContactId = Integer.parseInt(lastPathSegment);
 
-				while (resultCursor.moveToNext()) {
-					for (int i = 0; i < columns.length; i++) {
+					addNameDetails(rawContactId);
 
-						Log.d(logTag, columns[i] + " : " + resultCursor.getString(i));
-					}
-					Log.d(logTag, "---");
+					addPhoneDetails(rawContactId);
+
 				}
 			}
 		}
+	}
 
+	private void addNameDetails(int rawContactId) throws RemoteException, OperationApplicationException {
+		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+
+		ops.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
+				.withValue(Data.RAW_CONTACT_ID, rawContactId)
+				.withValue(Data.MIMETYPE, Nickname.CONTENT_ITEM_TYPE)
+				.withValue(Nickname.NAME, "Mr. Incredible")
+				.withValue(Nickname.TYPE, Nickname.TYPE_CUSTOM)
+				.withValue(Nickname.LABEL, "Superhero")
+				.build());
+
+		getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
+	}
+
+	private void addPhoneDetails(int rawContactId) throws RemoteException, OperationApplicationException {
+		ArrayList<ContentProviderOperation> ops = new ArrayList<ContentProviderOperation>();
+
+		ops.add(ContentProviderOperation.newInsert(Data.CONTENT_URI)
+				.withValue(Data.RAW_CONTACT_ID, rawContactId)
+				.withValue(Data.MIMETYPE, Phone.CONTENT_ITEM_TYPE)
+				.withValue(Phone.NUMBER, "96964926")
+				.withValue(Phone.TYPE, Phone.TYPE_HOME)
+				.withValue(Phone.LABEL, "some label")
+				.build());
+
+		getContentResolver().applyBatch(ContactsContract.AUTHORITY, ops);
 	}
 }
