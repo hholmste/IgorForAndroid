@@ -63,8 +63,9 @@ public class CreateContacts extends Activity {
 		new Thread(new Runnable() {
 			@Override
 			public void run() {
-				Log.d(logTag, "Marked " + getContentResolver().delete(RawContacts.CONTENT_URI, null, null)
-						+ " raw contacts for deletion");
+				int numberOfContactsMarkedForDeletion = getContentResolver().delete(RawContacts.CONTENT_URI, null, null);
+
+				Log.d(logTag, "Marked " + numberOfContactsMarkedForDeletion + " raw contacts for deletion");
 			}
 		}).start();
 	}
