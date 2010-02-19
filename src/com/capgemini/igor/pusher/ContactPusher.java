@@ -68,7 +68,7 @@ public class ContactPusher extends AsyncTask<Void, Integer, Integer> {
 	private int createContacts() throws RemoteException, OperationApplicationException {
 		int i = 0;
 
-		for (; i < 20 && !Thread.interrupted(); i++) {
+		for (; i < 20 && !isCancelled(); i++) {
 			Log.v(tag, "creating contact #" + i);
 			createRawContact(i);
 			publishProgress(i);

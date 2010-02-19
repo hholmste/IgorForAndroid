@@ -14,8 +14,8 @@ import com.capgemini.igor.pusher.ContactPusher;
 public class CreateContacts extends Activity {
 	private static final String logTag = "Igor:CreateContacts";
 
+	private ContactPusher contactPusher;
 	private ProgressBar progressBar;
-	private Thread createContactsThread;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -60,7 +60,16 @@ public class CreateContacts extends Activity {
 	}
 
 	private void createContacts() {
-		new ContactPusher(this).execute();
+		killWorkers();
+
+		contactPusher = new ContactPusher(this);
+		contactPusher.execute();
+	}
+
+	private void killWorkers() {
+		if (contactPusher != null && !contactPusher.isCancelled()) {
+			contactPusher.cancel(true);
+		}
 	}
 
 	private void deleteAllContacts() {
@@ -75,14 +84,7 @@ public class CreateContacts extends Activity {
 	}
 
 	private void exit() {
-		if (createContactsThread != null && createContactsThread.isAlive()) {
-			try {
-				createContactsThread.interrupt();
-				createContactsThread.join(5000);
-			} catch (InterruptedException e) {
-				e.printStackTrace();
-			}
-		}
+		killWorkers();
 
 		this.finish();
 	}

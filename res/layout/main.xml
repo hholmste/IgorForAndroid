@@ -2,14 +2,22 @@
 
 
 
-<TableLayout android:id="@+id/TableLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_gravity="center_vertical|center">
-
-<TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/app_name" android:layout_gravity="center"></TextView>
-<TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/createInstructions"></TextView><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/create" android:id="@+id/CreateButton"></Button>
-<TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/deleteInstructions"></TextView><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/delete" android:id="@+id/DeleteButton"></Button>
-
-<TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/exitInstructions"></TextView><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/exit" android:id="@+id/ExitButton"></Button>
+<TableLayout android:id="@+id/TableLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android">
 
 
-<ProgressBar android:id="@+id/ProgressBar01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="invisible"></ProgressBar>
+
+
+
+
+
+
+<TableRow android:id="@+id/TableRow01" android:layout_width="wrap_content" android:layout_height="wrap_content"><TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/app_name" android:layout_gravity="center" android:textStyle="bold"></TextView></TableRow>
+
+<TableRow android:id="@+id/TableRow02" android:layout_width="wrap_content" android:layout_height="wrap_content"><TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/createInstructions"></TextView></TableRow>
+<TableRow android:id="@+id/TableRow03" android:layout_width="wrap_content" android:layout_height="wrap_content"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/create" android:id="@+id/CreateButton"></Button></TableRow>
+<TableRow android:id="@+id/TableRow04" android:layout_width="wrap_content" android:layout_height="wrap_content"><TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/deleteInstructions"></TextView></TableRow>
+<TableRow android:id="@+id/TableRow05" android:layout_width="wrap_content" android:layout_height="wrap_content"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/delete" android:id="@+id/DeleteButton"></Button></TableRow>
+<TableRow android:id="@+id/TableRow06" android:layout_width="wrap_content" android:layout_height="wrap_content"><TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/exitInstructions"></TextView></TableRow>
+<TableRow android:id="@+id/TableRow07" android:layout_width="wrap_content" android:layout_height="wrap_content"><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/exit" android:id="@+id/ExitButton"></Button></TableRow>
+<TableRow android:id="@+id/TableRow08" android:layout_width="wrap_content" android:layout_height="wrap_content" android:layout_gravity="center_vertical|center_horizontal"><ProgressBar android:id="@+id/ProgressBar01" android:visibility="invisible" android:maxHeight="40px" android:maxWidth="40px" android:minHeight="20px" android:minWidth="20px" android:layout_height="wrap_content" android:layout_width="wrap_content" android:layout_gravity="center_vertical|center_horizontal" style="android:progressBarStyleHorizontal"></ProgressBar></TableRow>
 </TableLayout>
