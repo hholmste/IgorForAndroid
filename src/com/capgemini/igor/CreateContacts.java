@@ -7,12 +7,14 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
+import android.widget.ProgressBar;
 
 import com.capgemini.igor.pusher.ContactPusher;
 
 public class CreateContacts extends Activity {
 	private static final String logTag = "Igor:CreateContacts";
 
+	private ProgressBar progressBar;
 	private Thread createContactsThread;
 
 	/** Called when the activity is first created. */
@@ -23,6 +25,12 @@ public class CreateContacts extends Activity {
 		setContentView(R.layout.main);
 
 		setUpButtons();
+
+		setUpOtherWidgets();
+	}
+
+	private void setUpOtherWidgets() {
+		progressBar = (ProgressBar) findViewById(R.id.ProgressBar01);
 	}
 
 	private void setUpButtons() {
@@ -52,11 +60,7 @@ public class CreateContacts extends Activity {
 	}
 
 	private void createContacts() {
-		if (createContactsThread != null && createContactsThread.isAlive()) {
-			createContactsThread.interrupt();
-		}
-		createContactsThread = new Thread(new ContactPusher(getContentResolver()));
-		createContactsThread.start();
+		new ContactPusher(this).execute();
 	}
 
 	private void deleteAllContacts() {
@@ -65,7 +69,7 @@ public class CreateContacts extends Activity {
 			public void run() {
 				int numberOfContactsMarkedForDeletion = getContentResolver().delete(RawContacts.CONTENT_URI, null, null);
 
-				Log.d(logTag, "Marked " + numberOfContactsMarkedForDeletion + " raw contacts for deletion");
+				Log.i(logTag, "Marked " + numberOfContactsMarkedForDeletion + " raw contacts for deletion");
 			}
 		}).start();
 	}
@@ -81,6 +85,21 @@ public class CreateContacts extends Activity {
 		}
 
 		this.finish();
+	}
+
+	public void createContactsUpdateCallback(Integer progress) {
+		progressBar.setProgress(progress);
+	}
+
+	public void createContactsStartedCallback() {
+		progressBar.setIndeterminate(false);
+		progressBar.setMax(20);
+		progressBar.setProgress(0);
+		progressBar.setVisibility(ProgressBar.VISIBLE);
+	}
+
+	public void createContactsFinishedCallback() {
+		progressBar.setVisibility(ProgressBar.INVISIBLE);
 	}
 
 }

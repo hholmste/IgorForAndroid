@@ -5,9 +5,9 @@ import java.util.Arrays;
 import java.util.List;
 
 import android.content.ContentProviderOperation;
-import android.content.ContentResolver;
 import android.content.OperationApplicationException;
 import android.content.ContentProviderOperation.Builder;
+import android.os.AsyncTask;
 import android.os.RemoteException;
 import android.provider.ContactsContract;
 import android.provider.ContactsContract.Data;
@@ -17,39 +17,64 @@ import android.provider.ContactsContract.CommonDataKinds.Phone;
 import android.provider.ContactsContract.CommonDataKinds.StructuredName;
 import android.util.Log;
 
-public class ContactPusher implements Runnable {
+import com.capgemini.igor.CreateContacts;
+
+public class ContactPusher extends AsyncTask<Void, Integer, Integer> {
 
 	private static final String tag = "Igor:ContactPusher";
 
-	public final ContentResolver contentResolver;
+	public final CreateContacts parent;
 
-	public ContactPusher(ContentResolver contentResolver) {
-		assert contentResolver != null;
+	public ContactPusher(CreateContacts parent) {
+		assert parent != null;
 
-		this.contentResolver = contentResolver;
+		this.parent = parent;
 	}
 
 	@Override
-	public void run() {
-		Log.i(tag, "Starting contact push thread.");
+	protected Integer doInBackground(Void... params) {
+		Log.i(tag, "Starting contact push.");
 
 		try {
-			createContacts();
-			Log.i(tag, "All contacts have been inserted.");
+			return createContacts();
 		} catch (RemoteException e) {
 			e.printStackTrace();
 		} catch (OperationApplicationException e) {
 			e.printStackTrace();
 		}
 
-		Log.i(tag, "Exiting contact push thread.");
+		Log.i(tag, "Exiting contact push thread with error code.");
+		return -1;
 	}
 
-	private void createContacts() throws RemoteException, OperationApplicationException {
-		for (int i = 0; i < 20 && !Thread.interrupted(); i++) {
+	@Override
+	protected void onPreExecute() {
+		super.onPreExecute();
+		parent.createContactsStartedCallback();
+	}
+
+	@Override
+	protected void onProgressUpdate(Integer... values) {
+		super.onProgressUpdate(values);
+		parent.createContactsUpdateCallback(values[0]);
+	}
+
+	@Override
+	protected void onPostExecute(Integer result) {
+		super.onPostExecute(result);
+		parent.createContactsFinishedCallback();
+	}
+
+	private int createContacts() throws RemoteException, OperationApplicationException {
+		int i = 0;
+
+		for (; i < 20 && !Thread.interrupted(); i++) {
 			Log.v(tag, "creating contact #" + i);
 			createRawContact(i);
+			publishProgress(i);
 		}
+
+		return i;
 	}
 
 	private void createRawContact(int i) throws RemoteException, OperationApplicationException {
@@ -68,7 +93,7 @@ public class ContactPusher implements Runnable {
 		operations.add(phoneBuilder.build());
 		operations.add(nicknameBuilder.build());
 
-		contentResolver.applyBatch(ContactsContract.AUTHORITY, operations);
+		parent.getContentResolver().applyBatch(ContactsContract.AUTHORITY, operations);
 	}
 
 	private Builder getAccountBuilder() {

@@ -4,11 +4,12 @@
 
 <TableLayout android:id="@+id/TableLayout01" android:layout_width="fill_parent" android:layout_height="fill_parent" xmlns:android="http://schemas.android.com/apk/res/android" android:layout_gravity="center_vertical|center">
 
-<TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/app_name"></TextView>
+<TextView android:id="@+id/TextView01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/app_name" android:layout_gravity="center"></TextView>
 <TextView android:id="@+id/TextView02" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/createInstructions"></TextView><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/create" android:id="@+id/CreateButton"></Button>
 <TextView android:id="@+id/TextView03" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/deleteInstructions"></TextView><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/delete" android:id="@+id/DeleteButton"></Button>
 
 <TextView android:id="@+id/TextView04" android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/exitInstructions"></TextView><Button android:layout_width="wrap_content" android:layout_height="wrap_content" android:text="@string/exit" android:id="@+id/ExitButton"></Button>
 
 
+<ProgressBar android:id="@+id/ProgressBar01" android:layout_width="wrap_content" android:layout_height="wrap_content" android:visibility="invisible"></ProgressBar>
 </TableLayout>
