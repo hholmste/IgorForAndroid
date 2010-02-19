@@ -1,7 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     
-    <string name="app_name">Prefix</string>
+    <string name="app_name">IgorForAndroid</string>
 <string name="addingContacts">Adding contacts now</string>
 <string name="finished">Done adding contacts</string>
+<string name="createInstructions">Creates a bunch of new contacts.</string>
+<string name="create">Create contacts</string>
+<string name="deleteInstructions">Deletes absolutely all of your contacts.</string>
+<string name="delete">Delete absolutely all contacts</string>
+<string name="exitInstructions">Wait five seconds for contact creation to finish, and then terminates Igor.</string>
+<string name="exit">Exit Igor</string>
+
 </resources>

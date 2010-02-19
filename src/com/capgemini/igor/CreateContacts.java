@@ -4,6 +4,9 @@ import android.app.Activity;
 import android.os.Bundle;
 import android.provider.ContactsContract.RawContacts;
 import android.util.Log;
+import android.view.View;
+import android.view.View.OnClickListener;
+import android.widget.Button;
 
 import com.capgemini.igor.pusher.ContactPusher;
 
@@ -16,19 +19,36 @@ public class CreateContacts extends Activity {
 	@Override
 	public void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
 		setContentView(R.layout.main);
 
-		deleteAllContacts();
+		setUpButtons();
+	}
 
-		createContacts();
+	private void setUpButtons() {
+		Button createButton = (Button) findViewById(R.id.CreateButton);
+		createButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				createContacts();
+			}
+		});
 
-		try {
-			createContactsThread.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
-		}
+		Button deleteButton = (Button) findViewById(R.id.DeleteButton);
+		deleteButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				deleteAllContacts();
+			}
+		});
 
-		this.finish();
+		Button exitButton = (Button) findViewById(R.id.ExitButton);
+		exitButton.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				exit();
+			}
+		});
 	}
 
 	private void createContacts() {
@@ -40,8 +60,25 @@ public class CreateContacts extends Activity {
 	}
 
 	private void deleteAllContacts() {
-		Log.d(logTag, "Marked " + getContentResolver().delete(RawContacts.CONTENT_URI, null, null)
-				+ " raw contacts for deletion");
+		new Thread(new Runnable() {
+			@Override
+			public void run() {
+				Log.d(logTag, "Marked " + getContentResolver().delete(RawContacts.CONTENT_URI, null, null)
+						+ " raw contacts for deletion");
+			}
+		}).start();
+	}
+
+	private void exit() {
+		if (createContactsThread != null && createContactsThread.isAlive()) {
+			try {
+				createContactsThread.join(5000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
+		}
+
+		this.finish();
 	}
 
 }
