@@ -73,6 +73,7 @@ public class CreateContacts extends Activity {
 	private void exit() {
 		if (createContactsThread != null && createContactsThread.isAlive()) {
 			try {
+				createContactsThread.interrupt();
 				createContactsThread.join(5000);
 			} catch (InterruptedException e) {
 				e.printStackTrace();

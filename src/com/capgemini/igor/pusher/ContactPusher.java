@@ -46,7 +46,7 @@ public class ContactPusher implements Runnable {
 	}
 
 	private void createContacts() throws RemoteException, OperationApplicationException {
-		for (int i = 0; i < 20; i++) {
+		for (int i = 0; i < 20 && !Thread.interrupted(); i++) {
 			Log.v(tag, "creating contact #" + i);
 			createRawContact(i);
 		}
