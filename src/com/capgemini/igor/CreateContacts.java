@@ -1,21 +1,26 @@
 package com.capgemini.igor;
 
 import android.app.Activity;
+import android.os.AsyncTask;
 import android.os.Bundle;
-import android.provider.ContactsContract.RawContacts;
-import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
 import android.widget.ProgressBar;
 
 import com.capgemini.igor.pusher.ContactPusher;
+import com.capgemini.igor.pusher.ContactRemover;
 
 public class CreateContacts extends Activity {
-	private static final String logTag = "Igor:CreateContacts";
-
+	private ContactRemover contactRemover;
 	private ContactPusher contactPusher;
 	private ProgressBar progressBar;
+
+	private Button createButton;
+
+	private Button deleteButton;
+
+	private Button exitButton;
 
 	/** Called when the activity is first created. */
 	@Override
@@ -34,7 +39,7 @@ public class CreateContacts extends Activity {
 	}
 
 	private void setUpButtons() {
-		Button createButton = (Button) findViewById(R.id.CreateButton);
+		createButton = (Button) findViewById(R.id.CreateButton);
 		createButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -42,7 +47,7 @@ public class CreateContacts extends Activity {
 			}
 		});
 
-		Button deleteButton = (Button) findViewById(R.id.DeleteButton);
+		deleteButton = (Button) findViewById(R.id.DeleteButton);
 		deleteButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -50,7 +55,7 @@ public class CreateContacts extends Activity {
 			}
 		});
 
-		Button exitButton = (Button) findViewById(R.id.ExitButton);
+		exitButton = (Button) findViewById(R.id.ExitButton);
 		exitButton.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
@@ -66,21 +71,20 @@ public class CreateContacts extends Activity {
 		contactPusher.execute();
 	}
 
-	private void killWorkers() {
-		if (contactPusher != null && !contactPusher.isCancelled()) {
-			contactPusher.cancel(true);
-		}
+	private void deleteAllContacts() {
+		contactRemover = new ContactRemover(this);
+		contactRemover.execute();
 	}
 
-	private void deleteAllContacts() {
-		new Thread(new Runnable() {
-			@Override
-			public void run() {
-				int numberOfContactsMarkedForDeletion = getContentResolver().delete(RawContacts.CONTENT_URI, null, null);
+	private void killWorkers() {
+		killWorker(contactPusher);
+		killWorker(contactRemover);
+	}
 
-				Log.i(logTag, "Marked " + numberOfContactsMarkedForDeletion + " raw contacts for deletion");
-			}
-		}).start();
+	private void killWorker(AsyncTask<?, ?, ?> worker) {
+		if (worker != null && !worker.isCancelled()) {
+			worker.cancel(true);
+		}
 	}
 
 	private void exit() {
@@ -98,10 +102,36 @@ public class CreateContacts extends Activity {
 		progressBar.setMax(20);
 		progressBar.setProgress(0);
 		progressBar.setVisibility(ProgressBar.VISIBLE);
+
+		disableButtons();
 	}
 
 	public void createContactsFinishedCallback() {
 		progressBar.setVisibility(ProgressBar.INVISIBLE);
+
+		enableButtons();
 	}
 
+	public void deleteContactsStartedCallback() {
+		progressBar.setIndeterminate(true);
+		progressBar.setVisibility(ProgressBar.VISIBLE);
+
+		disableButtons();
+	}
+
+	public void deleteContactsFinishedCallback() {
+		progressBar.setVisibility(ProgressBar.INVISIBLE);
+
+		enableButtons();
+	}
+
+	private void disableButtons() {
+		createButton.setEnabled(false);
+		deleteButton.setEnabled(false);
+	}
+
+	private void enableButtons() {
+		createButton.setEnabled(true);
+		deleteButton.setEnabled(true);
+	}
 }
